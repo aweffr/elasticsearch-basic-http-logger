@@ -16,7 +16,7 @@ from urllib3.util.retry import Retry
 
 REQUEST_MAX_POOL_SIZE = 100
 
-__version__ = '0.1.0'
+__version__ = '0.1.1'
 
 
 def get_thread_id():
@@ -130,6 +130,10 @@ class DongDongESLogger(logging.Handler):
                 'message': self.format(record),
                 'log_time': int(1000 * time.time())
             }
+            if hasattr(record, 'action'):
+                data['action'] = record.action
+            if hasattr(record, 'digest'):
+                data['digest'] = record.digest
             url = os.path.join(self.url, self.index + '/_doc')
             resp = requests.post(url, json=data, timeout=3.0, headers=self.auth_headers)
             if not self.silent:
